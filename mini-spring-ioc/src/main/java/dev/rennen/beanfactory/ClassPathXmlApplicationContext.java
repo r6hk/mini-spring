@@ -1,8 +1,8 @@
 package dev.rennen.beanfactory;
 
-import dev.rennen.beans.ClassPathXmlResource;
-import dev.rennen.beans.Resource;
-import dev.rennen.beans.XmlBeanDefinitionReader;
+import dev.rennen.beans.define.ClassPathXmlResource;
+import dev.rennen.beans.define.Resource;
+import dev.rennen.beans.define.XmlBeanDefinitionReader;
 import dev.rennen.exception.BeansException;
 import lombok.extern.slf4j.Slf4j;
 /**

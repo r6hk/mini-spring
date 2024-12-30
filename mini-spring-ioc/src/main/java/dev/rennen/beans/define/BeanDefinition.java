@@ -1,4 +1,4 @@
-package dev.rennen.beans;
+package dev.rennen.beans.define;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

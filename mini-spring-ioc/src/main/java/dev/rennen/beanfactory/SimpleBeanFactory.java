@@ -1,11 +1,8 @@
 package dev.rennen.beanfactory;
 
-import dev.rennen.beans.BeanDefinition;
-import dev.rennen.exception.BeansException;
+import dev.rennen.beans.define.BeanDefinition;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

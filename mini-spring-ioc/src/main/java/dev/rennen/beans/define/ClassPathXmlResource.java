@@ -1,4 +1,4 @@
-package dev.rennen.beans;
+package dev.rennen.beans.define;
 
 import dev.rennen.exception.BeansException;
 import org.dom4j.Document;
