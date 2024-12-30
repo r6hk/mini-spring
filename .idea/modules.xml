@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/mini-spring.iml" filepath="$PROJECT_DIR$/mini-spring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mini-spring-ioc.iml" filepath="$PROJECT_DIR$/mini-spring-ioc.iml" />
     </modules>
   </component>
 </project>
