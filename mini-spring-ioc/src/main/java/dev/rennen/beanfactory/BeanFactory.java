@@ -9,8 +9,10 @@ import dev.rennen.beans.BeanDefinition;
  */
 public interface BeanFactory {
 
-    Object getBean(String beanName) throws BeansException;
+    Object getBean(String beanName);
 
-    void registerBeanDefinition(BeanDefinition beanDefinition);
+    Boolean containsBean(String name);
+
+    void registerBean(String beanName, Object obj);
 
 }
