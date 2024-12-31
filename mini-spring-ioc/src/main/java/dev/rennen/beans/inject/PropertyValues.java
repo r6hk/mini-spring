@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * PropertyValue 的集合封装形式
+ *
  * @author rennen.dev
  * @since 2024/12/30 17:56
  */
@@ -27,8 +29,8 @@ public class PropertyValues {
         this.propertyValueList.add(pv);
     }
 
-    public void addPropertyValue(String propertyName, Object propertyValue) {
-        addPropertyValue(new PropertyValue(propertyName, propertyValue));
+    public void addPropertyValue(String propertyType, String propertyName, Object propertyValue, boolean isRef) {
+        addPropertyValue(new PropertyValue(propertyType, propertyName, propertyValue, isRef));
     }
 
     public void removePropertyValue(PropertyValue pv) {

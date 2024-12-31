@@ -3,6 +3,8 @@ package dev.rennen.beans.inject;
 import java.util.*;
 
 /**
+ * ArgumentValue 的集合封装形式
+ *
  * @author rennen.dev
  * @since 2024/12/30 17:50
  */

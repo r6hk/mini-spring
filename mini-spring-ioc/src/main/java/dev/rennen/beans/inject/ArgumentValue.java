@@ -3,6 +3,8 @@ package dev.rennen.beans.inject;
 import lombok.Data;
 
 /**
+ * 用于处理构造器注入
+ *
  * @author rennen.dev
  * @since 2024/12/30 17:46
  */
