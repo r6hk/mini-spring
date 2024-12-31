@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
  * @author rennen.dev
  * @since 2024/12/27 17:30
  */
-public class BeansException extends Exception {
+public class BeansException extends RuntimeException {
 
     public BeansException(String message) {
         super(message);

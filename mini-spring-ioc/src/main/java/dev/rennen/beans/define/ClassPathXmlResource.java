@@ -19,7 +19,7 @@ public class ClassPathXmlResource implements Resource {
     Element rootElement;
     Iterator<Element> elementIterator;
 
-    public ClassPathXmlResource(String fileName) throws BeansException {
+    public ClassPathXmlResource(String fileName) {
         SAXReader saxReader = new SAXReader();
         URL xmlPath = this.getClass().getClassLoader().getResource(fileName);
         //将配置文件装载进来，生成一个迭代器，可以用于遍历

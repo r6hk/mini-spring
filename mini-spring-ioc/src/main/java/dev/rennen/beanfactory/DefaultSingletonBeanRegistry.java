@@ -1,5 +1,7 @@
 package dev.rennen.beanfactory;
 
+import lombok.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     protected final Map<String, Object> singletons = new ConcurrentHashMap<>(256);
 
     @Override
-    public void registerSingleton(String beanName, Object singletonObject) {
+    public void registerSingleton(@NonNull String beanName, @NonNull Object singletonObject) {
         synchronized (this.beanNames) {
             this.beanNames.add(beanName);
             this.singletons.put(beanName, singletonObject);
@@ -26,12 +28,12 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     }
 
     @Override
-    public Object getSingleton(String beanName) {
+    public Object getSingleton(@NonNull String beanName) {
         return this.singletons.get(beanName);
     }
 
     @Override
-    public boolean containsSingleton(String beanName) {
+    public boolean containsSingleton(@NonNull String beanName) {
         return this.singletons.containsKey(beanName);
     }
 
@@ -42,7 +44,7 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
         }
     }
 
-    protected void removeSingleton(String beanName) {
+    protected void removeSingleton(@NonNull String beanName) {
         synchronized (this.beanNames) {
             this.beanNames.remove(beanName);
             this.singletons.remove(beanName);
