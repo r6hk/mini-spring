@@ -1,4 +1,4 @@
-package dev.rennen.beans.factory.support;
+package dev.rennen.beans.factory;
 
 import dev.rennen.beans.factory.config.SingletonBeanRegistry;
 import lombok.NonNull;

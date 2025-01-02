@@ -4,7 +4,7 @@ import dev.rennen.beans.define.Resource;
 import dev.rennen.beans.factory.config.BeanDefinition;
 import dev.rennen.beans.factory.config.ConstructorArgumentValue;
 import dev.rennen.beans.factory.config.ConstructorArgumentValues;
-import dev.rennen.beans.factory.support.AbstractBeanFactory;
+import dev.rennen.beans.factory.AbstractBeanFactory;
 import dev.rennen.beans.inject.PropertyValue;
 import dev.rennen.beans.inject.PropertyValues;
 import org.apache.commons.lang3.StringUtils;
