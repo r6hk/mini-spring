@@ -5,6 +5,7 @@ import dev.rennen.beans.inject.ArgumentValue;
 import dev.rennen.beans.inject.ArgumentValues;
 import dev.rennen.beans.inject.PropertyValue;
 import dev.rennen.beans.inject.PropertyValues;
+import dev.rennen.exception.BeansException;
 import dev.rennen.exception.CreateBeanInstanceErrorException;
 import dev.rennen.exception.NoSuchBeanDefinitionException;
 import lombok.NonNull;
@@ -12,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author rennen.dev
@@ -23,76 +24,56 @@ import java.util.Optional;
 @Slf4j
 public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
-    private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
+    private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+    private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
 
 
     //getBean，容器的核心方法
     @Override
-    public Object getBean(@NonNull String beanName) {
-        //先尝试直接拿Bean实例
+    public Object getBean(String beanName) throws BeansException {
+        // 先尝试从容器中获取单例实例
         Object singleton = this.getSingleton(beanName);
-        //如果此时还没有这个Bean的实例，则获取它的定义来创建实例
         if (singleton == null) {
             synchronized (this) {
-                // 第二次检查，加锁后确保不会重复创建
+                // 双重检查，避免重复创建
                 singleton = this.getSingleton(beanName);
                 if (singleton == null) {
-                    //获取Bean的定义
-                    BeanDefinition beanDefinition = Optional.ofNullable(beanDefinitionMap.get(beanName))
-                            .orElseThrow(NoSuchBeanDefinitionException::new);
-                    singleton = createBean(beanDefinition);
-                    registerSingleton(beanName, singleton);
+                    // 从毛胚实例中获取
+                    singleton = this.earlySingletonObjects.get(beanName);
+                    if (singleton == null) {
+                        // 如果毛胚也不存在，则创建实例
+                        BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
+                        if (beanDefinition == null) {
+                            throw new BeansException("No bean named '" + beanName + "' available");
+                        }
+                        singleton = createBean(beanDefinition);
+                        this.registerSingleton(beanName, singleton);
+
+                        // 执行 Bean 生命周期的各个阶段（预留）
+                        // step 1: postProcessBeforeInitialization
+                        // step 2: afterPropertiesSet
+                        // step 3: init-method
+                        // step 4: postProcessAfterInitialization
+                    }
                 }
             }
         }
         return singleton;
     }
 
+    // 创建 Bean 实例
     private Object createBean(BeanDefinition bd) {
         Class<?> clz = null;
-        Object obj = null;
-        Constructor<?> con = null;
+        Object obj = doCreateBean(bd);
+        earlySingletonObjects.put(bd.getId(), obj);
         try {
             clz = Class.forName(bd.getClassName());
-            // 处理构造器参数
-            ArgumentValues argumentValues = bd.getConstructorArgumentValues();
-            //如果有参数
-            if (!argumentValues.isEmpty()) {
-                Class<?>[] paramTypes = new Class<?>[argumentValues.getArgumentCount()];
-                Object[] paramValues = new Object[argumentValues.getArgumentCount()];
-                //对每一个参数，分数据类型分别处理
-                for (int i = 0; i < argumentValues.getArgumentCount(); i++) {
-                    ArgumentValue argumentValue = argumentValues.getIndexedArgumentValue(i);
-                    switch (argumentValue.getType()) {
-                        case "Integer", "java.lang.Integer" -> {
-                            paramTypes[i] = Integer.class;
-                            paramValues[i] =
-                                    Integer.valueOf((String) argumentValue.getValue());
-                        }
-                        case "int" -> {
-                            paramTypes[i] = int.class;
-                            paramValues[i] = Integer.valueOf((String)
-                                    argumentValue.getValue());
-                        }
-                        case null, default -> {
-                            paramTypes[i] = String.class;
-                            paramValues[i] = argumentValue.getValue();
-                        }
-                    }
-                }
-                con = clz.getConstructor(paramTypes);
-                obj = con.newInstance(paramValues);
-
-            } else { //如果没有参数，直接创建实例
-                Constructor<?> constructor = clz.getDeclaredConstructor(); // 获取无参构造函数
-                constructor.setAccessible(true); // 如果构造函数是 private，需要设置为可访问
-                obj = constructor.newInstance(); // 创建实例
-            }
-        } catch (Exception e) {
-            throw new CreateBeanInstanceErrorException("create bean instance error, beanName: " + bd.getId()
-                    + ", class: " + bd.getClassName(), e);
+        } catch (ClassNotFoundException e) {
+            throw new CreateBeanInstanceErrorException("class not found when creating bean, beanName: "
+                    + bd.getId() + ", class: " + bd.getClassName(), e);
         }
         handleProperties(bd, clz, obj);
+        earlySingletonObjects.remove(bd.getId());
         return obj;
     }
 
@@ -139,6 +120,53 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
                 }
             }
         }
+    }
+
+    private Object doCreateBean(BeanDefinition bd) {
+        Class<?> clz = null;
+        Object obj = null;
+        Constructor<?> con = null;
+        try {
+            clz = Class.forName(bd.getClassName());
+            // 处理构造器参数
+            ArgumentValues argumentValues = bd.getConstructorArgumentValues();
+            //如果有参数
+            if (!argumentValues.isEmpty()) {
+                Class<?>[] paramTypes = new Class<?>[argumentValues.getArgumentCount()];
+                Object[] paramValues = new Object[argumentValues.getArgumentCount()];
+                //对每一个参数，分数据类型分别处理
+                for (int i = 0; i < argumentValues.getArgumentCount(); i++) {
+                    ArgumentValue argumentValue = argumentValues.getIndexedArgumentValue(i);
+                    switch (argumentValue.getType()) {
+                        case "Integer", "java.lang.Integer" -> {
+                            paramTypes[i] = Integer.class;
+                            paramValues[i] =
+                                    Integer.valueOf((String) argumentValue.getValue());
+                        }
+                        case "int" -> {
+                            paramTypes[i] = int.class;
+                            paramValues[i] = Integer.valueOf((String)
+                                    argumentValue.getValue());
+                        }
+                        case null, default -> {
+                            paramTypes[i] = String.class;
+                            paramValues[i] = argumentValue.getValue();
+                        }
+                    }
+                }
+                con = clz.getConstructor(paramTypes);
+                obj = con.newInstance(paramValues);
+
+            } else { //如果没有参数，直接创建实例
+                Constructor<?> constructor = clz.getDeclaredConstructor(); // 获取无参构造函数
+                constructor.setAccessible(true); // 如果构造函数是 private，需要设置为可访问
+                obj = constructor.newInstance(); // 创建实例
+            }
+        } catch (Exception e) {
+            throw new CreateBeanInstanceErrorException("create bean instance error, beanName: " + bd.getId()
+                    + ", class: " + bd.getClassName(), e);
+        }
+        return obj;
     }
 
     @Override
