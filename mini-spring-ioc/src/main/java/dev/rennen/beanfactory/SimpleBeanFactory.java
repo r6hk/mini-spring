@@ -204,4 +204,10 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
     public void registerBeanDefinition(@NonNull BeanDefinition beanDefinition) {
         this.beanDefinitionMap.put(beanDefinition.getId(), beanDefinition);
     }
+
+    public void refresh() {
+        for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
+            getBean(entry.getKey());
+        }
+    }
 }
