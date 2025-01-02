@@ -3,6 +3,7 @@ package dev.rennen.beans.factory;
 import dev.rennen.beans.factory.process.BeanPostProcessor;
 import dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor;
 import dev.rennen.beans.factory.support.AutowiredCapableBeanFactory;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author rennen.dev
  * @since 2025/1/2 11:13
  */
+@Getter
 public class AbstractAutowiredCapableBeanFactory extends AbstractBeanFactory implements AutowiredCapableBeanFactory {
     private final List<AutowiredAnnotationBeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
@@ -21,10 +23,6 @@ public class AbstractAutowiredCapableBeanFactory extends AbstractBeanFactory imp
 
     public int getBeanPostProcessorCount() {
         return this.beanPostProcessors.size();
-    }
-
-    public List<AutowiredAnnotationBeanPostProcessor> getBeanPostProcessors() {
-        return this.beanPostProcessors;
     }
 
 

@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
 
-    private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
-    private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
+    protected final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+    protected final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
 
     //getBean，容器的核心方法
     @Override
