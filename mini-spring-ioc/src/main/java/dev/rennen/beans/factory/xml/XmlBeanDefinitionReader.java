@@ -1,8 +1,10 @@
-package dev.rennen.beans.define;
+package dev.rennen.beans.factory.xml;
 
-import dev.rennen.beanfactory.SimpleBeanFactory;
-import dev.rennen.beans.inject.ArgumentValue;
-import dev.rennen.beans.inject.ArgumentValues;
+import dev.rennen.beans.factory.config.BeanDefinition;
+import dev.rennen.beans.define.Resource;
+import dev.rennen.beans.factory.support.SimpleBeanFactory;
+import dev.rennen.beans.factory.config.ConstructorArgumentValue;
+import dev.rennen.beans.factory.config.ConstructorArgumentValues;
 import dev.rennen.beans.inject.PropertyValue;
 import dev.rennen.beans.inject.PropertyValues;
 import org.apache.commons.lang3.StringUtils;
@@ -54,12 +56,12 @@ public class XmlBeanDefinitionReader {
 
             //处理构造器参数
             List<Element> constructorElements = element.elements("constructor-arg");
-            ArgumentValues AVS = new ArgumentValues();
+            ConstructorArgumentValues AVS = new ConstructorArgumentValues();
             for (Element e : constructorElements) {
                 String aType = e.attributeValue("type");
                 String aName = e.attributeValue("name");
                 String aValue = e.attributeValue("value");
-                AVS.addArgumentValue(new ArgumentValue(aType, aName, aValue));
+                AVS.addArgumentValue(new ConstructorArgumentValue(aType, aName, aValue));
             }
             beanDefinition.setConstructorArgumentValues(AVS);
             this.simpleBeanFactory.registerBeanDefinition(beanDefinition);

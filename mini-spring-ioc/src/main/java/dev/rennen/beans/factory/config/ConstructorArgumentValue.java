@@ -1,4 +1,4 @@
-package dev.rennen.beans.inject;
+package dev.rennen.beans.factory.config;
 
 import lombok.Data;
 
@@ -9,19 +9,19 @@ import lombok.Data;
  * @since 2024/12/30 17:46
  */
 @Data
-public class ArgumentValue {
+public class ConstructorArgumentValue {
 
     private Object value;
     private String type;
     private String name;
 
-    public ArgumentValue(Object value, String type, String name) {
+    public ConstructorArgumentValue(Object value, String type, String name) {
         this.value = value;
         this.type = type;
         this.name = name;
     }
 
-    public ArgumentValue(Object value, String type) {
+    public ConstructorArgumentValue(Object value, String type) {
         this.value = value;
         this.type = type;
     }

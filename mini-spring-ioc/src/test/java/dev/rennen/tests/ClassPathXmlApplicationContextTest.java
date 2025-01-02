@@ -1,7 +1,6 @@
 package dev.rennen.tests;
 
-import dev.rennen.beanfactory.ClassPathXmlApplicationContext;
-import dev.rennen.exception.BeansException;
+import dev.rennen.beans.factory.ClassPathXmlApplicationContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

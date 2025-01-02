@@ -1,8 +1,6 @@
-package dev.rennen.beans.define;
+package dev.rennen.beans.factory.config;
 
-import dev.rennen.beans.inject.ArgumentValues;
 import dev.rennen.beans.inject.PropertyValues;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -17,7 +15,7 @@ public class BeanDefinition {
 
     private boolean lazyInit = false;
     private String[] dependsOn;
-    private ArgumentValues constructorArgumentValues;
+    private ConstructorArgumentValues constructorArgumentValues;
     private PropertyValues propertyValues;
     private String initMethodName;
     private volatile Object beanClass;

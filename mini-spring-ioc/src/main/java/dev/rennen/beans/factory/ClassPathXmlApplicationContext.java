@@ -1,8 +1,9 @@
-package dev.rennen.beanfactory;
+package dev.rennen.beans.factory;
 
 import dev.rennen.beans.define.ClassPathXmlResource;
 import dev.rennen.beans.define.Resource;
-import dev.rennen.beans.define.XmlBeanDefinitionReader;
+import dev.rennen.beans.factory.support.SimpleBeanFactory;
+import dev.rennen.beans.factory.xml.XmlBeanDefinitionReader;
 import dev.rennen.event.ApplicationEvent;
 import dev.rennen.event.ApplicationEventPublisher;
 import lombok.NonNull;

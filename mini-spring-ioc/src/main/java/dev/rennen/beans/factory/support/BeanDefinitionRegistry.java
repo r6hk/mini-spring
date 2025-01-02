@@ -1,4 +1,6 @@
-package dev.rennen.beans.define;
+package dev.rennen.beans.factory.support;
+
+import dev.rennen.beans.factory.config.BeanDefinition;
 
 /**
  * @author rennen.dev

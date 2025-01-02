@@ -1,5 +1,6 @@
-package dev.rennen.beanfactory;
+package dev.rennen.beans.factory.support;
 
+import dev.rennen.beans.factory.config.SingletonBeanRegistry;
 import lombok.NonNull;
 
 import java.util.ArrayList;

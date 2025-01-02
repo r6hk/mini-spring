@@ -1,4 +1,4 @@
-package dev.rennen.beanfactory;
+package dev.rennen.beans.factory;
 
 /**
  * @author rennen.dev

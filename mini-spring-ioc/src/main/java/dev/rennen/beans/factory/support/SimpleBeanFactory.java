@@ -1,8 +1,9 @@
-package dev.rennen.beanfactory;
+package dev.rennen.beans.factory.support;
 
-import dev.rennen.beans.define.BeanDefinition;
-import dev.rennen.beans.inject.ArgumentValue;
-import dev.rennen.beans.inject.ArgumentValues;
+import dev.rennen.beans.factory.config.BeanDefinition;
+import dev.rennen.beans.factory.BeanFactory;
+import dev.rennen.beans.factory.config.ConstructorArgumentValue;
+import dev.rennen.beans.factory.config.ConstructorArgumentValues;
 import dev.rennen.beans.inject.PropertyValue;
 import dev.rennen.beans.inject.PropertyValues;
 import dev.rennen.exception.BeansException;
@@ -129,28 +130,28 @@ public class SimpleBeanFactory extends DefaultSingletonBeanRegistry implements B
         try {
             clz = Class.forName(bd.getClassName());
             // 处理构造器参数
-            ArgumentValues argumentValues = bd.getConstructorArgumentValues();
+            ConstructorArgumentValues constructorArgumentValues = bd.getConstructorArgumentValues();
             //如果有参数
-            if (!argumentValues.isEmpty()) {
-                Class<?>[] paramTypes = new Class<?>[argumentValues.getArgumentCount()];
-                Object[] paramValues = new Object[argumentValues.getArgumentCount()];
+            if (!constructorArgumentValues.isEmpty()) {
+                Class<?>[] paramTypes = new Class<?>[constructorArgumentValues.getArgumentCount()];
+                Object[] paramValues = new Object[constructorArgumentValues.getArgumentCount()];
                 //对每一个参数，分数据类型分别处理
-                for (int i = 0; i < argumentValues.getArgumentCount(); i++) {
-                    ArgumentValue argumentValue = argumentValues.getIndexedArgumentValue(i);
-                    switch (argumentValue.getType()) {
+                for (int i = 0; i < constructorArgumentValues.getArgumentCount(); i++) {
+                    ConstructorArgumentValue constructorArgumentValue = constructorArgumentValues.getIndexedArgumentValue(i);
+                    switch (constructorArgumentValue.getType()) {
                         case "Integer", "java.lang.Integer" -> {
                             paramTypes[i] = Integer.class;
                             paramValues[i] =
-                                    Integer.valueOf((String) argumentValue.getValue());
+                                    Integer.valueOf((String) constructorArgumentValue.getValue());
                         }
                         case "int" -> {
                             paramTypes[i] = int.class;
                             paramValues[i] = Integer.valueOf((String)
-                                    argumentValue.getValue());
+                                    constructorArgumentValue.getValue());
                         }
                         case null, default -> {
                             paramTypes[i] = String.class;
-                            paramValues[i] = argumentValue.getValue();
+                            paramValues[i] = constructorArgumentValue.getValue();
                         }
                     }
                 }
