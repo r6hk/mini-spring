@@ -1,10 +1,10 @@
 package dev.rennen.beans.factory.xml;
 
-import dev.rennen.beans.factory.config.BeanDefinition;
 import dev.rennen.beans.define.Resource;
-import dev.rennen.beans.factory.support.SimpleBeanFactory;
+import dev.rennen.beans.factory.config.BeanDefinition;
 import dev.rennen.beans.factory.config.ConstructorArgumentValue;
 import dev.rennen.beans.factory.config.ConstructorArgumentValues;
+import dev.rennen.beans.factory.support.AbstractBeanFactory;
 import dev.rennen.beans.inject.PropertyValue;
 import dev.rennen.beans.inject.PropertyValues;
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +18,10 @@ import java.util.List;
  * @since 2024/12/27 17:55
  */
 public class XmlBeanDefinitionReader {
-    SimpleBeanFactory simpleBeanFactory;
+    AbstractBeanFactory beanFactory;
 
-    public XmlBeanDefinitionReader(SimpleBeanFactory simpleBeanFactory) {
-        this.simpleBeanFactory = simpleBeanFactory;
+    public XmlBeanDefinitionReader(AbstractBeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
     }
 
     public void loadBeanDefinitions(Resource resource) {
@@ -64,7 +64,7 @@ public class XmlBeanDefinitionReader {
                 AVS.addArgumentValue(new ConstructorArgumentValue(aType, aName, aValue));
             }
             beanDefinition.setConstructorArgumentValues(AVS);
-            this.simpleBeanFactory.registerBeanDefinition(beanDefinition);
+            this.beanFactory.registerBeanDefinition(beanDefinition);
         }
     }
 }

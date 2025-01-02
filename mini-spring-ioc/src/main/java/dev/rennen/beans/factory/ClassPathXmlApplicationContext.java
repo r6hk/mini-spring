@@ -2,7 +2,8 @@ package dev.rennen.beans.factory;
 
 import dev.rennen.beans.define.ClassPathXmlResource;
 import dev.rennen.beans.define.Resource;
-import dev.rennen.beans.factory.support.SimpleBeanFactory;
+import dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor;
+import dev.rennen.beans.factory.support.AutowiredCapableBeanFactory;
 import dev.rennen.beans.factory.xml.XmlBeanDefinitionReader;
 import dev.rennen.event.ApplicationEvent;
 import dev.rennen.event.ApplicationEventPublisher;
@@ -14,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ClassPathXmlApplicationContext implements BeanFactory, ApplicationEventPublisher {
-    SimpleBeanFactory beanFactory;
+    AutowiredCapableBeanFactory beanFactory;
 
     //context负责整合容器的启动过程，读外部配置，解析Bean定义，创建BeanFactory
     public ClassPathXmlApplicationContext(@NonNull String fileName) {
@@ -23,13 +24,26 @@ public class ClassPathXmlApplicationContext implements BeanFactory, ApplicationE
 
     public ClassPathXmlApplicationContext(@NonNull String fileName, boolean isRefresh) {
         Resource resource = new ClassPathXmlResource(fileName);
-        SimpleBeanFactory beanFactory = new SimpleBeanFactory();
+        AutowiredCapableBeanFactory beanFactory = new AutowiredCapableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
         reader.loadBeanDefinitions(resource);
         this.beanFactory = beanFactory;
         if (isRefresh) {
-            this.beanFactory.refresh();
+            refresh();
         }
+    }
+
+    public void refresh() {
+        registerBeanPostProcessors(beanFactory);
+        onRefresh();
+    }
+
+    private void onRefresh() {
+        this.beanFactory.refresh();
+    }
+
+    private void registerBeanPostProcessors(AutowiredCapableBeanFactory beanFactory) {
+        beanFactory.addBeanPostProcessor(new AutowiredAnnotationBeanPostProcessor());
     }
 
     //context再对外提供一个getBean，底下就是调用的BeanFactory对应的方法
