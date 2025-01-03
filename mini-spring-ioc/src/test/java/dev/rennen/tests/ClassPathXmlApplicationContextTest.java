@@ -32,8 +32,7 @@ public class ClassPathXmlApplicationContextTest {
 
     @Test
     public void testContainsBean() {
-        // TODO: 容器初始化时不会创建 Bean 实例，需要实现容器的 refresh() 方法，将 Bean 实例化
-        assertFalse(context.containsBean("testService"), "上下文应该包含名为 'testService' 的 Bean");
+        assertTrue(context.containsBean("testService"), "上下文应该包含名为 'testService' 的 Bean");
         assertFalse(context.containsBean("nonExistentBean"), "上下文不应该包含名为 'nonExistentBean' 的 Bean");
     }
 

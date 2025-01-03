@@ -153,7 +153,7 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
 
     @Override
     public void registerBean(String beanName, Object obj) {
-
+        this.beanFactory.registerBean(beanName, obj);
     }
 }
 
