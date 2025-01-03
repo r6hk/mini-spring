@@ -194,7 +194,7 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     @Override
-    public Boolean containsBean(@NonNull String name) {
+    public boolean containsBean(@NonNull String name) {
         return containsSingleton(name);
     }
 

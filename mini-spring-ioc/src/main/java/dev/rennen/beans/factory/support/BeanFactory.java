@@ -8,7 +8,7 @@ public interface BeanFactory {
 
     Object getBean(String beanName);
 
-    Boolean containsBean(String name);
+    boolean containsBean(String name);
 
     void registerBean(String beanName, Object obj);
 

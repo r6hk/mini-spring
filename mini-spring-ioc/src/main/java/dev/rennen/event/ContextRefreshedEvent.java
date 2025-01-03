@@ -8,11 +8,11 @@ import java.io.Serial;
  * @author rennen.dev
  * @since 2025/1/2 15:56
  */
-public class ContextRefreshEvent extends ApplicationEvent {
+public class ContextRefreshedEvent extends ApplicationEvent {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public ContextRefreshEvent(Object source) {
+    public ContextRefreshedEvent(Object source) {
         super(source);
     }
 
