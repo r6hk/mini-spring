@@ -10,6 +10,7 @@ import dev.rennen.beans.inject.PropertyValues;
 import dev.rennen.exception.BeansException;
 import dev.rennen.exception.CreateBeanInstanceErrorException;
 import dev.rennen.exception.NoSuchBeanDefinitionException;
+import dev.rennen.util.ConvertUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -119,7 +120,14 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
                         case "int" -> paramTypes[0] = int.class;
                         case null, default -> paramTypes[0] = String.class;
                     }
-                    paramValues[0] = pValue;
+                    if (paramTypes[0] == String.class) paramValues[0] = pValue;
+                    else {
+                        try {
+                            paramValues[0] = ConvertUtil.convertStringToType(paramTypes[0], (String) pValue);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 } else {
                     try {
                         paramTypes[0] = Class.forName(pType);

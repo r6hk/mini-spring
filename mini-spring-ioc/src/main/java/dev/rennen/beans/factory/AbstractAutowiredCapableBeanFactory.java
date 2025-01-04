@@ -14,9 +14,9 @@ import java.util.List;
  */
 @Getter
 public class AbstractAutowiredCapableBeanFactory extends AbstractBeanFactory implements AutowiredCapableBeanFactory {
-    private final List<AutowiredAnnotationBeanPostProcessor> beanPostProcessors = new ArrayList<>();
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
-    public void addBeanPostProcessor(AutowiredAnnotationBeanPostProcessor beanPostProcessor) {
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
         this.beanPostProcessors.remove(beanPostProcessor);
         this.beanPostProcessors.add(beanPostProcessor);
     }
@@ -29,7 +29,7 @@ public class AbstractAutowiredCapableBeanFactory extends AbstractBeanFactory imp
     @Override
     public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) {
         Object result = existingBean;
-        for (AutowiredAnnotationBeanPostProcessor postProcessor : getBeanPostProcessors()) {
+        for (BeanPostProcessor postProcessor : getBeanPostProcessors()) {
             postProcessor.setBeanFactory(this);
             result = postProcessor.postProcessBeforeInitialization(result, beanName);
             if (result == null) {

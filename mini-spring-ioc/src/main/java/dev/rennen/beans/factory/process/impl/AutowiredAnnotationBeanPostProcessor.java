@@ -2,7 +2,7 @@ package dev.rennen.beans.factory.process.impl;
 
 import dev.rennen.beans.factory.annotation.Autowired;
 import dev.rennen.beans.factory.process.BeanPostProcessor;
-import dev.rennen.beans.factory.AbstractAutowiredCapableBeanFactory;
+import dev.rennen.beans.factory.support.BeanFactory;
 import dev.rennen.exception.CreateBeanInstanceErrorException;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ import java.lang.reflect.Field;
 @Setter
 public class AutowiredAnnotationBeanPostProcessor implements BeanPostProcessor {
 
-    private AbstractAutowiredCapableBeanFactory beanFactory;
+    private BeanFactory beanFactory;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
@@ -48,5 +48,10 @@ public class AutowiredAnnotationBeanPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         return null;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
     }
 }

@@ -61,7 +61,7 @@ public class XmlBeanDefinitionReader {
                 String aType = e.attributeValue("type");
                 String aName = e.attributeValue("name");
                 String aValue = e.attributeValue("value");
-                AVS.addArgumentValue(new ConstructorArgumentValue(aType, aName, aValue));
+                AVS.addArgumentValue(new ConstructorArgumentValue(aValue, aType, aName));
             }
             beanDefinition.setConstructorArgumentValues(AVS);
             this.beanFactory.registerBeanDefinition(beanDefinition);

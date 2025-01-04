@@ -12,6 +12,7 @@ import dev.rennen.event.core.ApplicationEvent;
 import dev.rennen.event.core.ApplicationEventPublisher;
 import dev.rennen.event.core.ApplicationListener;
 import dev.rennen.event.core.SimpleApplicationEventPublisher;
+import dev.rennen.exception.BeanPostProcessorException;
 import dev.rennen.exception.BeansException;
 import dev.rennen.exception.CreateBeanInstanceErrorException;
 import lombok.NonNull;
@@ -94,9 +95,8 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
     }
 
     @Override
-    public
-    void registerBeanPostProcessors(ConfigurableListableBeanFactory bf) {
-        System.out.println("try to registerBeanPostProcessors");
+    public void registerBeanPostProcessors(ConfigurableListableBeanFactory bf) {
+        log.info("try to registerBeanPostProcessors");
         String[] bdNames = this.beanFactory.getBeanDefinitionNames();
         for (String bdName : bdNames) {
             BeanDefinition bd = this.beanFactory.getBeanDefinition(bdName);
@@ -108,12 +108,12 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
                 e1.printStackTrace();
             }
             if (BeanPostProcessor.class.isAssignableFrom(clz)) {
-                System.out.println(" registerBeanPostProcessors : " + clzName);
+                log.info(" registerBeanPostProcessors : " + clzName);
                 try {
                     //this.beanFactory.addBeanPostProcessor((BeanPostProcessor) clz.newInstance());
                     this.beanFactory.addBeanPostProcessor((BeanPostProcessor)(this.beanFactory.getBean(bdName)));
                 } catch (BeansException e) {
-                    e.printStackTrace();
+                    throw new BeanPostProcessorException("register bean post processor error");
                 }
             }
         }

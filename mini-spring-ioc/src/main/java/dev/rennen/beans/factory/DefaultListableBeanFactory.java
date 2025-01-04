@@ -1,7 +1,6 @@
 package dev.rennen.beans.factory;
 
 import dev.rennen.beans.factory.config.BeanDefinition;
-import dev.rennen.beans.factory.process.BeanPostProcessor;
 import dev.rennen.beans.factory.support.ConfigurableListableBeanFactory;
 
 import java.util.ArrayList;
@@ -14,11 +13,6 @@ import java.util.Map;
  * @since 2025/1/2 15:32
  */
 public class DefaultListableBeanFactory extends AbstractAutowiredCapableBeanFactory implements ConfigurableListableBeanFactory {
-
-    @Override
-    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
-
-    }
 
     @Override
     public void registerDependentBean(String beanName, String dependentBeanName) {

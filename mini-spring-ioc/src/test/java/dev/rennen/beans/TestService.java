@@ -1,4 +1,4 @@
-package dev.rennen.service;
+package dev.rennen.beans;
 
 /**
  * @author rennen.dev

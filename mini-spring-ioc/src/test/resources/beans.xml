@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans>
-    <bean id = "testService" class = "dev.rennen.service.impl.TestServiceImpl"/>
+    <bean id = "testService" class = "dev.rennen.beans.impl.TestServiceImpl">
+        <property type="String" name="name" value="rennen"/>
+        <property type="int" name="age" value="18"/>
+        <property type="dev.rennen.beans.TestDao" name="testDao" ref="testDao"/>
+    </bean>
+
+    <bean id = "testDao" class = "dev.rennen.beans.impl.TestDaoImpl">
+        <constructor-arg type="String" name="name" value="abc"/>
+        <constructor-arg type="int" name="age" value="3"/>
+    </bean>
+
+    <bean id = "aBean" class = "dev.rennen.beans.circular.ABean">
+        <property type="dev.rennen.beans.circular.BBean" name="bBean" ref="bBean"/>
+    </bean>
+
+    <bean id = "bBean" class = "dev.rennen.beans.circular.BBean">
+        <property type="dev.rennen.beans.circular.CBean" name="cBean" ref="cBean"/>
+    </bean>
+
+    <bean id = "cBean" class = "dev.rennen.beans.circular.CBean">
+        <property type="dev.rennen.beans.circular.ABean" name="aBean" ref="aBean"/>
+    </bean>
+
+    <bean id = "xBean" class = "dev.rennen.beans.autowire.XBean"/>
+
+    <bean id = "yBean" class = "dev.rennen.beans.autowire.YBean"/>
+
+    <bean id = "autowiredAnnotationBeanPostProcessor" class = "dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor"/>
 </beans>
