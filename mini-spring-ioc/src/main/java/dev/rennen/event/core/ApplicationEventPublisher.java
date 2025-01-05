@@ -5,7 +5,9 @@ package dev.rennen.event.core;
  * @since 2024/12/30 17:35
  */
 public interface ApplicationEventPublisher {
-    void publishEvent(ApplicationEvent<?> event);
+    void publishEvent(Object event);
 
-    void addListener(ApplicationListener<?> listener);
+    default void publishEvent(ApplicationEvent event) {
+        publishEvent((Object) event);
+    }
 }

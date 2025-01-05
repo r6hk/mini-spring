@@ -7,6 +7,7 @@ import dev.rennen.beans.circular.CBean;
 import dev.rennen.beans.factory.ClassPathXmlApplicationContext;
 import dev.rennen.beans.impl.TestDaoImpl;
 import dev.rennen.beans.impl.TestServiceImpl;
+import dev.rennen.event.listener.MyListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,7 @@ public class ClassPathXmlApplicationContextTest {
             assertNotNull(testService, "从上下文中获取的 Bean 不应该为空");
             assertTrue(context.containsBean("testService"), "上下文应该包含名为 'testService' 的 Bean");
         } catch (Exception e) {
-            fail("getBean 方法执行失败: " + e.getMessage());
+            fail("getBean 方法执行失败: ", e);
         }
     }
 
@@ -56,7 +57,7 @@ public class ClassPathXmlApplicationContextTest {
             assertNotNull(bean1, "从上下文中获取的 singletonBean 不应该为空");
             assertSame(bean1, bean2, "singletonBean 应该是单例的，获取的对象引用应相同");
         } catch (Exception e) {
-            fail("测试单例作用域时发生错误: " + e.getMessage());
+            fail("测试单例作用域时发生错误: ", e);
         }
     }
 
@@ -73,7 +74,7 @@ public class ClassPathXmlApplicationContextTest {
             assertEquals(18, testService.getAge(), "testService 的 getAge 方法应该返回 18");
             assertEquals("Hello from DAO!", testService.getTestDao().sayHello(), "testService 的 getDao 方法应该返回 'Hello from DAO!'");
         } catch (Exception e) {
-            fail("测试 set 方法注入时发生错误: " + e.getMessage());
+            fail("测试 set 方法注入时发生错误: ", e);
         }
     }
 
@@ -89,7 +90,7 @@ public class ClassPathXmlApplicationContextTest {
             assertEquals("abc", testDao.getName(), "testDao 的 getName 方法应该返回 'abc'");
             assertEquals(3, testDao.getAge(), "testDao 的 getAge 方法应该返回 3");
         } catch (Exception e) {
-            fail("测试构造器注入时发生错误: " + e.getMessage());
+            fail("测试构造器注入时发生错误: ", e);
         }
     }
 
@@ -130,6 +131,17 @@ public class ClassPathXmlApplicationContextTest {
             assertEquals("Hello from YBean!", xBean.getYBean().sayHello(), "xBean 的 yBean 属性应该返回 'Hello from YBean!'");
         } catch (Exception e) {
             fail("测试 @Autowired 注入时发生错误: ", e);
+        }
+    }
+
+    @Test
+    public void testEventPublisher() {
+        try {
+            MyListener listener = (MyListener) context.getBean("myListener");
+            assertNotNull(listener, "创建的监听器不应该为空");
+            assertTrue(listener.isCalled(), "监听器的 isCalled 方法应该返回 true");
+        } catch (Exception e) {
+            fail("测试事件发布时发生错误: ", e);
         }
     }
 

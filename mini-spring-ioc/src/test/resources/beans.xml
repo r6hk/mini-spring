@@ -28,4 +28,6 @@
     <bean id = "yBean" class = "dev.rennen.beans.autowire.YBean"/>
 
     <bean id = "autowiredAnnotationBeanPostProcessor" class = "dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor"/>
+
+    <bean id = "myListener" class = "dev.rennen.event.listener.MyListener"/>
 </beans>

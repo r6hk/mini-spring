@@ -1,4 +1,4 @@
-package dev.rennen.event;
+package dev.rennen.event.eventobject;
 
 import dev.rennen.event.core.ApplicationEvent;
 

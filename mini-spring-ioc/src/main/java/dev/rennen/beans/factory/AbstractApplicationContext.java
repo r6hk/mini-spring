@@ -5,7 +5,7 @@ import dev.rennen.beans.factory.process.BeanPostProcessor;
 import dev.rennen.beans.factory.support.ApplicationContext;
 import dev.rennen.beans.factory.support.ConfigurableListableBeanFactory;
 import dev.rennen.environment.Environment;
-import dev.rennen.event.core.ApplicationEventPublisher;
+import dev.rennen.event.core.SimpleApplicationEventPublisher;
 import dev.rennen.exception.BeansException;
 import lombok.Getter;
 import lombok.NonNull;
@@ -38,7 +38,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     @Setter
     @Getter
-    private ApplicationEventPublisher applicationEventPublisher;
+    private SimpleApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public Object getBean(String name) {

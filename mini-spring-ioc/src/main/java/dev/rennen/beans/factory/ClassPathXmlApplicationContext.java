@@ -7,11 +7,10 @@ import dev.rennen.beans.factory.process.BeanFactoryPostProcessor;
 import dev.rennen.beans.factory.process.BeanPostProcessor;
 import dev.rennen.beans.factory.support.ConfigurableListableBeanFactory;
 import dev.rennen.beans.factory.xml.XmlBeanDefinitionReader;
-import dev.rennen.event.ContextRefreshedEvent;
 import dev.rennen.event.core.ApplicationEvent;
-import dev.rennen.event.core.ApplicationEventPublisher;
 import dev.rennen.event.core.ApplicationListener;
 import dev.rennen.event.core.SimpleApplicationEventPublisher;
+import dev.rennen.event.eventobject.ContextRefreshedEvent;
 import dev.rennen.exception.BeanPostProcessorException;
 import dev.rennen.exception.BeansException;
 import dev.rennen.exception.CreateBeanInstanceErrorException;
@@ -42,29 +41,26 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
     }
 
     @Override
-    public
-    void registerListeners() {
+    public void registerListeners() {
         String[] bdNames = this.beanFactory.getBeanDefinitionNames();
         for (String bdName : bdNames) {
-            Object bean = null;
-            bean = getBean(bdName);
-            if (bean instanceof ApplicationListener) {
-                this.getApplicationEventPublisher().addListener((ApplicationListener<?>) bean);
+            Object bean = getBean(bdName);
+            if (bean instanceof ApplicationListener<?>) {
+                @SuppressWarnings("unchecked")
+                ApplicationListener<ApplicationEvent> listener = (ApplicationListener<ApplicationEvent>) bean;
+                getApplicationEventPublisher().addApplicationListener(listener);
             }
         }
-
     }
 
     @Override
-    public
-    void initApplicationEventPublisher() {
-        ApplicationEventPublisher aep = new SimpleApplicationEventPublisher();
+    public void initApplicationEventPublisher() {
+        SimpleApplicationEventPublisher aep = new SimpleApplicationEventPublisher();
         this.setApplicationEventPublisher(aep);
     }
 
     @Override
-    public
-    void postProcessBeanFactory(ConfigurableListableBeanFactory bf) {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory bf) {
 
         String[] bdNames = this.beanFactory.getBeanDefinitionNames();
         for (String bdName : bdNames) {
@@ -108,7 +104,7 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
                 e1.printStackTrace();
             }
             if (BeanPostProcessor.class.isAssignableFrom(clz)) {
-                log.info(" registerBeanPostProcessors : " + clzName);
+                log.info(" registerBeanPostProcessors : {}", clzName);
                 try {
                     //this.beanFactory.addBeanPostProcessor((BeanPostProcessor) clz.newInstance());
                     this.beanFactory.addBeanPostProcessor((BeanPostProcessor)(this.beanFactory.getBean(bdName)));
@@ -120,8 +116,7 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
     }
 
     @Override
-    public
-    void onRefresh() {
+    public void onRefresh() {
         this.beanFactory.refresh();
     }
 
@@ -131,25 +126,16 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
     }
 
     @Override
-    public void addListener(ApplicationListener<?> listener) {
-        this.getApplicationEventPublisher().addListener(listener);
-
-    }
-
-    @Override
-    public
-    void finishRefresh() {
+    public void finishRefresh() {
         publishEvent(new ContextRefreshedEvent(this));
 
     }
 
     @Override
-    public void publishEvent(ApplicationEvent<?> event) {
+    public void publishEvent(Object event) {
         this.getApplicationEventPublisher().publishEvent(event);
 
     }
-
-
 
     @Override
     public void registerBean(String beanName, Object obj) {
