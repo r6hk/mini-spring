@@ -67,6 +67,23 @@
 
     </dependencies>
 
+    <!--    模块间相互依赖时，统一版本号-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>dev.rennen</groupId>
+                <artifactId>mini-spring-ioc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dev.rennen</groupId>
+                <artifactId>mini-spring-mvc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>

@@ -13,4 +13,24 @@
 
     <artifactId>mini-spring-mvc</artifactId>
 
+    <dependencies>
+        <!--        解析 XML 配置-->
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.rennen</groupId>
+            <artifactId>mini-spring-ioc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
