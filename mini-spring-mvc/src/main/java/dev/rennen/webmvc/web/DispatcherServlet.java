@@ -1,5 +1,6 @@
 package dev.rennen.webmvc.web;
 
+import dev.rennen.webmvc.context.WebApplicationContext;
 import dev.rennen.webmvc.exception.InternalServerException;
 import dev.rennen.webmvc.util.annotation.RequestMapping;
 import jakarta.servlet.ServletConfig;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -26,7 +28,7 @@ import java.util.*;
 public class DispatcherServlet extends HttpServlet {
 
     /**
-     * URL 对应的 Class
+     * URL 对应的 Class TODO: 待删除
      */
     private final Map<String, Class<?>> mappingClz = new HashMap<>();
 
@@ -65,16 +67,26 @@ public class DispatcherServlet extends HttpServlet {
      */
     private final Map<String,Method> mappingMethods = new HashMap<>();
 
+    private WebApplicationContext webApplicationContext;
+
 
     /**
      * 配置文件路径
      */
     private String sContextConfigLocation;
 
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        this.webApplicationContext = (WebApplicationContext) this.getServletContext()
+                        .getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
         this.sContextConfigLocation = config.getInitParameter("contextConfigLocation");
-        URL xmlPath = this.getClass().getClassLoader().getResource(sContextConfigLocation);
+        URL xmlPath = null;
+        try {
+            xmlPath = this.getServletContext().getResource(sContextConfigLocation);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         this.packageNames.addAll(XmlScanComponentHelper.getNodeValue(xmlPath));
         refresh();
     }
@@ -147,13 +159,11 @@ public class DispatcherServlet extends HttpServlet {
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 //检查所有的方法
-                boolean isRequestMapping =
-                        method.isAnnotationPresent(RequestMapping.class);
+                boolean isRequestMapping = method.isAnnotationPresent(RequestMapping.class);
                 if (isRequestMapping) { //有RequestMapping注解
                     String methodName = method.getName();
                     //建立方法名和URL的映射
-                    String urlMapping =
-                            method.getAnnotation(RequestMapping.class).value();
+                    String urlMapping = method.getAnnotation(RequestMapping.class).value();
                     this.urlMappingNames.add(urlMapping);
                     this.mappingObjs.put(urlMapping, obj);
                     this.mappingMethods.put(urlMapping, method);

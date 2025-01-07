@@ -3,10 +3,23 @@
          xmlns:web="http://xmlns.jcp.org/xml/ns/javaee"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID">
+<!--    容器的配置文件-->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>beans.xml</param-value>
+    </context-param>
+<!--    Tomcat 初始化顺序： -->
+    <listener>
+        <listener-class>
+            dev.rennen.webmvc.web.listener.ContextLoaderListener
+        </listener-class>
+        <load-on-startup>1</load-on-startup>
+    </listener>
     <servlet>
         <servlet-name>web-mvc</servlet-name>
         <servlet-class>dev.rennen.webmvc.web.DispatcherServlet</servlet-class>
         <init-param>
+<!--            MVC @RequestMapping 注解扫描的配置文件-->
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/servlet.xml</param-value>
         </init-param>
