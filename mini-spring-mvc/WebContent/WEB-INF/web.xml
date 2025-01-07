@@ -5,8 +5,7 @@
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID">
     <servlet>
         <servlet-name>web-mvc</servlet-name>
-<!--        TODO -->
-        <servlet-class>???.DispatcherServlet</servlet-class>
+        <servlet-class>dev.rennen.webmvc.web.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/servlet.xml</param-value>
