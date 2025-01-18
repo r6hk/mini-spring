@@ -14,6 +14,12 @@ import java.util.Map;
  */
 public class DefaultListableBeanFactory extends AbstractAutowiredCapableBeanFactory implements ConfigurableListableBeanFactory {
 
+    ConfigurableListableBeanFactory parentBeanFactory;
+
+    public void setParent(ConfigurableListableBeanFactory parentBeanFactory) {
+        this.parentBeanFactory = parentBeanFactory;
+    }
+
     @Override
     public void registerDependentBean(String beanName, String dependentBeanName) {
 
