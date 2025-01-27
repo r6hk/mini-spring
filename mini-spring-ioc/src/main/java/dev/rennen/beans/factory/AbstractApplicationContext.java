@@ -1,5 +1,6 @@
 package dev.rennen.beans.factory;
 
+import dev.rennen.beans.factory.aware.ApplicationContextAware;
 import dev.rennen.beans.factory.process.BeanFactoryPostProcessor;
 import dev.rennen.beans.factory.process.BeanPostProcessor;
 import dev.rennen.beans.factory.support.ApplicationContext;
@@ -42,7 +43,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     @Override
     public Object getBean(String name) {
-        return getBeanFactory().getBean(name);
+        Object returnObj = getBeanFactory().getBean(name);
+        if (returnObj instanceof ApplicationContextAware) {
+            ((ApplicationContextAware) returnObj).setApplicationContext(this);
+        }
+        return returnObj;
     }
 
     @Override
