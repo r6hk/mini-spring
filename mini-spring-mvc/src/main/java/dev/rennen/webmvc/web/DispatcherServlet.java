@@ -2,6 +2,9 @@ package dev.rennen.webmvc.web;
 
 import dev.rennen.webmvc.context.AnnotationConfigWebApplicationContext;
 import dev.rennen.webmvc.context.WebApplicationContext;
+import dev.rennen.webmvc.web.view.ModelAndView;
+import dev.rennen.webmvc.web.view.View;
+import dev.rennen.webmvc.web.view.ViewResolver;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -14,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2025/1/5 17:06
@@ -24,6 +28,12 @@ import java.util.List;
 public class DispatcherServlet extends HttpServlet {
 
     public static final String WEB_APPLICATION_CONTEXT_ATTRIBUTE = DispatcherServlet.class.getName() + ".CONTEXT";
+
+    public static final String VIEW_RESOLVER_BEAN_NAME = "viewResolver";
+
+    public static final String HANDLER_MAPPING_BEAN_NAME = "handlerMapping";
+
+    public static final String HANDLER_ADAPTER_BEAN_NAME = "handlerAdapter";
 
     /**
      * 保存自定义的 @RequestMapping 名称（URL 的名称）的列表
@@ -38,11 +48,13 @@ public class DispatcherServlet extends HttpServlet {
 
     private WebApplicationContext parentApplicationContext;
 
-    private RequestMappingHandlerMapping handlerMapping;
+    private HandlerMapping handlerMapping;
 
-    private RequestMappingHandlerAdapter handlerAdapter;
+    private HandlerAdapter handlerAdapter;
 
-    public final String PACKAGE_SCAN_PARAMETER = "packageScanLocation";
+    private ViewResolver viewResolver;
+
+    public static final String PACKAGE_SCAN_PARAMETER = "packageScanLocation";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -66,14 +78,19 @@ public class DispatcherServlet extends HttpServlet {
     private void refresh() {
         initHandlerMappings(this.webApplicationContext);
         initHandlerAdapters(this.webApplicationContext);
+        initViewResolvers(this.webApplicationContext);
     }
 
     private void initHandlerMappings(WebApplicationContext wac) {
-        this.handlerMapping = new RequestMappingHandlerMapping(wac);
+        this.handlerMapping = (HandlerMapping) wac.getBean(HANDLER_MAPPING_BEAN_NAME);
     }
 
     private void initHandlerAdapters(WebApplicationContext wac) {
-        this.handlerAdapter = new RequestMappingHandlerAdapter(wac);
+        this.handlerAdapter = (HandlerAdapter) wac.getBean(HANDLER_ADAPTER_BEAN_NAME);
+    }
+
+    private void initViewResolvers(WebApplicationContext wac) {
+        this.viewResolver = (ViewResolver) wac.getBean(VIEW_RESOLVER_BEAN_NAME);
     }
 
     @Override
@@ -86,18 +103,50 @@ public class DispatcherServlet extends HttpServlet {
             log.error("doDispatch error", e);
             response.getWriter().append("500 Server Error");
         } finally {
-
+            // do nothing
         }
     }
 
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HandlerMethod handlerMethod = null;
+        ModelAndView mv = null;
+
         handlerMethod = this.handlerMapping.getHandler(request);
         if (handlerMethod == null) {
-            response.getWriter().append("404 not found");
+            response.getWriter().append("404 Not Found");
+            return;
         }
+
         HandlerAdapter ha = this.handlerAdapter;
-        ha.handle(request, response, handlerMethod);
+
+        mv = ha.handle(request, response, handlerMethod);
+
+        render(request, response, mv);
+    }
+
+    private void render(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) throws Exception {
+        if (mv == null) {
+            response.getWriter().flush();
+            response.getWriter().close();
+            return;
+        }
+
+        String sTarget = mv.getViewName();
+        Map<String, Object> modelMap = mv.getModel();
+        View view = resolveViewName(sTarget, modelMap, request);
+        if (view == null) {
+            response.getWriter().append("404 Not Found");
+            return;
+        }
+        view.render(modelMap, request, response);
+    }
+
+    private View resolveViewName(String sTarget, Map<String, Object> modelMap, HttpServletRequest request)
+            throws Exception {
+        if (this.viewResolver != null) {
+            return this.viewResolver.resolveViewName(sTarget);
+        }
+        return null;
     }
 
 }

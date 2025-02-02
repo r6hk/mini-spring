@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <beans>
-    <bean id="webBindingInitializer" class="dev.rennen.webmvc.test.convert.DateInitializer"/>
+<!--    MVC 相关配置-->
+    <bean id="handlerMapping" class="dev.rennen.webmvc.web.RequestMappingHandlerMapping"/>
+
+    <bean id="handlerAdapter" class="dev.rennen.webmvc.web.RequestMappingHandlerAdapter">
+        <property type="dev.rennen.webmvc.util.convert.HttpMessageConverter" name="messageConverter" ref="messageConverter"/>
+        <property type="dev.rennen.webmvc.util.convert.WebBindingInitializer" name="webBindingInitializer" ref="webBindingInitializer"/>
+    </bean>
+
+    <bean id="webBindingInitializer" class="dev.rennen.webmvc.test.convert.DateInitializer" />
+    <bean id="messageConverter" class="dev.rennen.webmvc.util.convert.DefaultHttpMessageConverter">
+        <property type="dev.rennen.webmvc.util.convert.ObjectMapper" name="objectMapper" ref="objectMapper"/>
+    </bean>
+    <bean id="objectMapper" class="dev.rennen.webmvc.util.convert.ObjectMapper" >
+        <property type="String" name="dateFormat" value="yyyy/MM/dd"/>
+        <property type="String" name="decimalFormat" value="###.##"/>
+    </bean>>
+
+    <bean id="viewResolver" class="dev.rennen.webmvc.web.view.InternalResourceViewResolver" >
+        <property type="String" name="viewClassName" value="dev.rennen.webmvc.web.view.JstlView" />
+        <property type="String" name="prefix" value="/jsp/" />
+        <property type="String" name="suffix" value=".jsp" />
+    </bean>
 </beans>

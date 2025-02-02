@@ -42,8 +42,8 @@ public class CustomNumberEditor implements PropertyEditor {
 
     //接收Object作为参数
     public void setValue(Object value) {
-        if (value instanceof Number) {
-            this.value = (NumberUtils.convertNumberToTargetClass((Number) value, this.numberClass));
+        if (value instanceof Number number) {
+            this.value = (NumberUtils.convertNumberToTargetClass(number, this.numberClass));
         } else {
             this.value = value;
         }

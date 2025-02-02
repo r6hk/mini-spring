@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
+ * 用于将 request 请求内的字符串参数转换成不同类型的参数，来进行适配
  * 2025/1/18 11:26
  *
  * @author rennen.dev

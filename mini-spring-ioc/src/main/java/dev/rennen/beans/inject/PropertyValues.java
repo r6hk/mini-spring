@@ -19,7 +19,7 @@ public class PropertyValues {
     }
 
     public PropertyValues(Map<String, Object> map) {
-        this.propertyValueList = new ArrayList<PropertyValue>(10);
+        this.propertyValueList = new ArrayList<>(10);
         for (Map.Entry<String, Object> e : map.entrySet()) {
             PropertyValue pv = new PropertyValue(e.getKey(), e.getValue());
             this.propertyValueList.add(pv);
