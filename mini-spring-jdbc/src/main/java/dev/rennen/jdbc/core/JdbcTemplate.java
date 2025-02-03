@@ -1,5 +1,7 @@
 package dev.rennen.jdbc.core;
 
+import dev.rennen.jdbc.core.mapper.RowMapper;
+import dev.rennen.jdbc.core.mapper.RowMapperResultSetExtractor;
 import dev.rennen.jdbc.core.statement.ArgumentPreparedStatementSetter;
 import dev.rennen.jdbc.core.statement.PreparedStatementCallback;
 import dev.rennen.jdbc.core.statement.StatementCallback;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 
 /**
  * 抽取 JDBC Template 实现基本的 JDBC 访问框架 <br/> 2025/2/3 11:29
@@ -30,7 +33,7 @@ public class JdbcTemplate {
     private void initializeDatabase() {
         String initSql = """
                     CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY, name VARCHAR(255));
-                    INSERT INTO users (id, name) VALUES
+                    MERGE INTO users (id, name) VALUES
                     (1, 'Alice'),
                     (2, 'Bob'),
                     (3, 'Charlie'),
@@ -73,5 +76,27 @@ public class JdbcTemplate {
             throw new JdbcException("Failed to execute query", e);
         }
     }
+
+    public <T> List<T> query(String sql, Object[] args, RowMapper<T> rowMapper) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // 设置参数
+            ArgumentPreparedStatementSetter setter = new ArgumentPreparedStatementSetter(args);
+            setter.setValues(pstmt);
+
+            // 执行查询
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // 使用 RowMapperResultSetExtractor 提取数据
+                RowMapperResultSetExtractor<T> resultSetExtractor = new RowMapperResultSetExtractor<>(rowMapper);
+                return resultSetExtractor.extractData(rs);
+            }
+
+        } catch (SQLException e) {
+            log.error("Failed to execute query: {}", sql, e);
+            throw new JdbcException("Failed to execute query", e);
+        }
+    }
+
 
 }
