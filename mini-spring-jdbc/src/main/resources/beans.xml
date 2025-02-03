@@ -1,0 +1,15 @@
+
+
+<beans>
+    <bean id="dataSource" class="dev.rennen.jdbc.core.datasource.SingleConnectionDataSource">
+        <property type="String" name="driverClassName" value="org.h2.Driver"/>
+        <property type="String" name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;"/>
+        <property type="String" name="username" value="sa"/>
+        <property type="String" name="password" value=""/>
+    </bean>
+    <bean id="jdbcTemplate" class="dev.rennen.jdbc.core.JdbcTemplate" >
+        <property type="javax.sql.DataSource" name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="userService" class="dev.rennen.jdbc.test.service.UserService" />
+    <bean id = "autowiredAnnotationBeanPostProcessor" class = "dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor"/>
+</beans>
