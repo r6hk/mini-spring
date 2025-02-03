@@ -21,9 +21,16 @@ public class JdbcTest {
     }
 
     @Test
-    public void test() {
+    public void test1() {
         UserService userService = (UserService) context.getBean("userService");
         User userInfo = userService.getUserInfoFunctional(1);
+        System.out.println(userInfo);
+    }
+
+    @Test
+    public void test2() {
+        UserService userService = (UserService) context.getBean("userService");
+        User userInfo = userService.getUserInfoPrepared(1);
         System.out.println(userInfo);
     }
 }

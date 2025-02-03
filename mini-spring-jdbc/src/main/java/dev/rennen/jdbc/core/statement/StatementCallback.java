@@ -1,4 +1,4 @@
-package dev.rennen.jdbc.core;
+package dev.rennen.jdbc.core.statement;
 
 import java.sql.SQLException;
 import java.sql.Statement;

@@ -30,4 +30,25 @@ public class UserService {
         });
     }
 
+    /**
+     * 使用 PreparedStatement 查询用户信息，支持参数绑定，防止 SQL 注入
+     * @param userId
+     * @return
+     */
+    public User getUserInfoPrepared(int userId) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        return jdbcTemplate.query(sql, new Object[]{userId}, pstmt -> {
+            ResultSet rs = pstmt.executeQuery();
+            User user = null;
+            if (rs.next()) {
+                user = new User();
+                user.setId(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+            }
+            return user;
+        });
+    }
+
+
 }
