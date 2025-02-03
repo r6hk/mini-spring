@@ -12,13 +12,13 @@ import java.lang.reflect.Method;
  *
  * @author rennen.dev
  */
-public class BeanWrapperImpl extends PropertyEditorRegistrySupport {
-    Object wrappedObject; //目标对象
+public class BeanWrapperImpl extends AbstractPropertyAccessor {
+    Object wrappedObject; // 目标对象
     Class<?> clz;
-    PropertyValues pvs; //参数值
+    PropertyValues pvs;   // 参数值
 
     public BeanWrapperImpl(Object object) {
-        registerDefaultEditors(); //不同数据类型的参数转换器editor
+        registerDefaultEditors(); // 不同数据类型的参数转换器 editor
         this.wrappedObject = object;
         this.clz = object.getClass();
     }
@@ -31,7 +31,7 @@ public class BeanWrapperImpl extends PropertyEditorRegistrySupport {
         return wrappedObject;
     }
 
-    //绑定参数值
+    // 绑定参数值
     public void setPropertyValues(PropertyValues pvs) {
         this.pvs = pvs;
         for (PropertyValue pv : this.pvs.getPropertyValues()) {
@@ -39,7 +39,7 @@ public class BeanWrapperImpl extends PropertyEditorRegistrySupport {
         }
     }
 
-    //绑定具体某个参数
+    // 绑定具体某个参数
     public void setPropertyValue(PropertyValue pv) {
         BeanPropertyHandler propertyHandler = new BeanPropertyHandler(pv.getName());
         PropertyEditor pe = this.getCustomEditor(propertyHandler.getPropertyClz());
@@ -51,8 +51,7 @@ public class BeanWrapperImpl extends PropertyEditorRegistrySupport {
         propertyHandler.setValue(pe.getValue());
     }
 
-
-    //一个内部类，用于处理参数，通过getter()和setter()操作属性
+    // 内部类：用于处理属性，通过 getter() 和 setter() 操作属性
     class BeanPropertyHandler {
         Method writeMethod = null;
         Method readMethod = null;
@@ -61,40 +60,49 @@ public class BeanWrapperImpl extends PropertyEditorRegistrySupport {
 
         public BeanPropertyHandler(String propertyName) {
             try {
-                //获取参数对应的属性及类型
+                // 获取属性及其类型
                 Field field = clz.getDeclaredField(propertyName);
                 propertyClz = field.getType();
-                //获取设置属性的方法，按照约定为setXxxx（）
-                this.writeMethod = clz.getDeclaredMethod("set" +
-                        propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1), propertyClz);
-                //获取读属性的方法，按照约定为getXxxx（）
-                this.readMethod = clz.getDeclaredMethod("get" +
-                        propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1), propertyClz);
+
+                // 获取 setter 方法（例如：setXxx）
+                this.writeMethod = clz.getDeclaredMethod(
+                        "set" + capitalize(propertyName), propertyClz
+                );
+                writeMethod.setAccessible(true); // 确保私有方法可访问
+
+                // 获取 getter 方法（例如：getXxx），不带参数
+                this.readMethod = clz.getDeclaredMethod(
+                        "get" + capitalize(propertyName)
+                );
+                readMethod.setAccessible(true);  // 确保私有方法可访问
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        //调用getter读属性值
+        // 调用 getter 读取属性值
         public Object getValue() {
-            Object result = null;
-            writeMethod.setAccessible(true);
             try {
-                result = readMethod.invoke(wrappedObject);
+                return readMethod.invoke(wrappedObject);
             } catch (Exception e) {
                 e.printStackTrace();
+                return null;
             }
-            return result;
         }
 
-        //调用setter设置属性值
+        // 调用 setter 设置属性值
         public void setValue(Object value) {
-            writeMethod.setAccessible(true);
             try {
                 writeMethod.invoke(wrappedObject, value);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        // 工具方法：首字母大写
+        private String capitalize(String str) {
+            if (str == null || str.isEmpty()) return str;
+            return str.substring(0, 1).toUpperCase() + str.substring(1);
         }
     }
 }

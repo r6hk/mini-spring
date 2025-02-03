@@ -21,8 +21,6 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -47,16 +45,7 @@ public abstract class NumberUtils {
 	public static final Set<Class<?>> STANDARD_NUMBER_TYPES;
 
 	static {
-		Set<Class<?>> numberTypes = new HashSet<>(8);
-		numberTypes.add(Byte.class);
-		numberTypes.add(Short.class);
-		numberTypes.add(Integer.class);
-		numberTypes.add(Long.class);
-		numberTypes.add(BigInteger.class);
-		numberTypes.add(Float.class);
-		numberTypes.add(Double.class);
-		numberTypes.add(BigDecimal.class);
-		STANDARD_NUMBER_TYPES = Collections.unmodifiableSet(numberTypes);
+        STANDARD_NUMBER_TYPES = Set.of(Byte.class, Short.class, Integer.class, Long.class, BigInteger.class, Float.class, Double.class, BigDecimal.class);
 	}
 
 
@@ -193,7 +182,7 @@ public abstract class NumberUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Number> T parseNumber(String text, Class<T> targetClass) {
-		String trimmed = StringUtils.trimAllWhitespace(text);
+		String trimmed = trimAllWhitespace(text);
 
 		if (Byte.class == targetClass) {
 			return (T) (isHexNumber(trimmed) ? Byte.decode(trimmed) : Byte.valueOf(trimmed));
@@ -254,7 +243,7 @@ public abstract class NumberUtils {
 				}
 			}
 			try {
-				Number number = numberFormat.parse(StringUtils.trimAllWhitespace(text));
+				Number number = numberFormat.parse(trimAllWhitespace(text));
 				return convertNumberToTargetClass(number, targetClass);
 			}
 			catch (ParseException ex) {
@@ -313,6 +302,10 @@ public abstract class NumberUtils {
 
 		BigInteger result = new BigInteger(value.substring(index), radix);
 		return (negative ? result.negate() : result);
+	}
+
+	private static String trimAllWhitespace(String text) {
+		return text.trim();
 	}
 
 }

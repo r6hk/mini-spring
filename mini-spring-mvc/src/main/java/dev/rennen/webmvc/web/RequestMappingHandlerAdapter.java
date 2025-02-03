@@ -1,9 +1,5 @@
 package dev.rennen.webmvc.web;
 
-import dev.rennen.beans.factory.aware.ApplicationContextAware;
-import dev.rennen.beans.factory.support.ApplicationContext;
-import dev.rennen.exception.BeansException;
-import dev.rennen.webmvc.context.WebApplicationContext;
 import dev.rennen.webmvc.util.convert.HttpMessageConverter;
 import dev.rennen.webmvc.util.convert.WebBindingInitializer;
 import dev.rennen.webmvc.util.convert.WebDataBinderFactory;
@@ -25,15 +21,12 @@ import java.lang.reflect.Parameter;
  * @author rennen.dev
  */
 @Slf4j
-public class RequestMappingHandlerAdapter implements HandlerAdapter, ApplicationContextAware {
-    private ApplicationContext applicationContext = null;
+public class RequestMappingHandlerAdapter implements HandlerAdapter {
+
     @Setter @Getter
     private WebBindingInitializer webBindingInitializer = null;
+    @Setter @Getter
     private HttpMessageConverter messageConverter = null;
-
-    public RequestMappingHandlerAdapter(WebApplicationContext wac) {
-        this.applicationContext = wac;
-    }
 
     @Override
     public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -120,13 +113,4 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
         return methodParamObjs;
     }
 
-    /**
-     * 容器注入接口
-     * @param applicationContext 容器
-     * @throws BeansException 异常
-     */
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

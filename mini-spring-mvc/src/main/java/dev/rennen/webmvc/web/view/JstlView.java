@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @Data
 public class JstlView implements View {
-    public static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
+    public static final String DEFAULT_CONTENT_TYPE = "text/html;charset=UTF-8";
     private String contentType = DEFAULT_CONTENT_TYPE;
     private String requestContextAttribute;
     private String beanName;

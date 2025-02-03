@@ -83,6 +83,7 @@ public class DispatcherServlet extends HttpServlet {
 
     private void initHandlerMappings(WebApplicationContext wac) {
         this.handlerMapping = (HandlerMapping) wac.getBean(HANDLER_MAPPING_BEAN_NAME);
+        this.handlerMapping.initMappings(wac);
     }
 
     private void initHandlerAdapters(WebApplicationContext wac) {
@@ -114,14 +115,11 @@ public class DispatcherServlet extends HttpServlet {
         handlerMethod = this.handlerMapping.getHandler(request);
         if (handlerMethod == null) {
             response.getWriter().append("404 Not Found");
-            return;
+        } else {
+            HandlerAdapter ha = this.handlerAdapter;
+            mv = ha.handle(request, response, handlerMethod);
+            render(request, response, mv);
         }
-
-        HandlerAdapter ha = this.handlerAdapter;
-
-        mv = ha.handle(request, response, handlerMethod);
-
-        render(request, response, mv);
     }
 
     private void render(HttpServletRequest request, HttpServletResponse response, ModelAndView mv) throws Exception {
@@ -133,7 +131,7 @@ public class DispatcherServlet extends HttpServlet {
 
         String sTarget = mv.getViewName();
         Map<String, Object> modelMap = mv.getModel();
-        View view = resolveViewName(sTarget, modelMap, request);
+        View view = resolveViewName(sTarget);
         if (view == null) {
             response.getWriter().append("404 Not Found");
             return;
@@ -141,7 +139,7 @@ public class DispatcherServlet extends HttpServlet {
         view.render(modelMap, request, response);
     }
 
-    private View resolveViewName(String sTarget, Map<String, Object> modelMap, HttpServletRequest request)
+    private View resolveViewName(String sTarget)
             throws Exception {
         if (this.viewResolver != null) {
             return this.viewResolver.resolveViewName(sTarget);

@@ -1,4 +1,4 @@
-package dev.rennen.webmvc.test.convert;
+package dev.rennen.webmvc.util.convert.date;
 
 import dev.rennen.webmvc.util.convert.WebBindingInitializer;
 import dev.rennen.webmvc.web.WebDataBinder;

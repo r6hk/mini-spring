@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <components>
-    <component-scan base-package="dev.rennen.webmvc.controller"/>
+    <component-scan base-package="dev.rennen.webmvc.test.controller"/>
 </components>

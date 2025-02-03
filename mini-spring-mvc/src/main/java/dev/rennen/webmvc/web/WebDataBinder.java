@@ -1,9 +1,7 @@
 package dev.rennen.webmvc.web;
 
 import dev.rennen.beans.inject.PropertyValues;
-import dev.rennen.webmvc.util.convert.BeanWrapperImpl;
-import dev.rennen.webmvc.util.convert.PropertyEditor;
-import dev.rennen.webmvc.util.convert.WebUtils;
+import dev.rennen.webmvc.util.convert.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
@@ -18,6 +16,7 @@ public class WebDataBinder {
     private Object target;
     private Class<?> clz;
     private String objectName;
+    AbstractPropertyAccessor propertyAccessor;
 
     public WebDataBinder(Object target) {
         this(target, "");
@@ -27,6 +26,7 @@ public class WebDataBinder {
         this.target = target;
         this.objectName = targetName;
         this.clz = this.target.getClass();
+        this.propertyAccessor = new BeanWrapperImpl(this.target);
     }
 
     //核心绑定方法，将request里面的参数值绑定到目标对象的属性上
@@ -46,8 +46,8 @@ public class WebDataBinder {
     }
 
     //设置属性值的工具
-    protected BeanWrapperImpl getPropertyAccessor() {
-        return new BeanWrapperImpl(this.target);
+    protected AbstractPropertyAccessor  getPropertyAccessor() {
+        return this.propertyAccessor;
     }
 
     public void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor) {

@@ -22,6 +22,14 @@ public class DefaultHttpMessageConverter implements HttpMessageConverter {
         this.objectMapper = objectMapper;
     }
     public void write(Object obj, HttpServletResponse response) throws IOException {
+        if (obj instanceof String strReturn) {
+            response.setContentType(DEFAULT_CONTENT_TYPE);
+            response.setCharacterEncoding(DEFAULT_CHARACTER_ENCODING);
+            PrintWriter pw = response.getWriter();
+            pw.write(strReturn);
+            response.flushBuffer();
+            return;
+        }
         response.setContentType(DEFAULT_CONTENT_TYPE);
         response.setCharacterEncoding(DEFAULT_CHARACTER_ENCODING);
         writeInternal(obj, response);

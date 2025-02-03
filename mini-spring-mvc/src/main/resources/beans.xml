@@ -8,11 +8,13 @@
         <property type="dev.rennen.webmvc.util.convert.WebBindingInitializer" name="webBindingInitializer" ref="webBindingInitializer"/>
     </bean>
 
-    <bean id="webBindingInitializer" class="dev.rennen.webmvc.test.convert.DateInitializer" />
+    <bean id="webBindingInitializer" class="dev.rennen.webmvc.util.convert.date.DateInitializer"/>
+
     <bean id="messageConverter" class="dev.rennen.webmvc.util.convert.DefaultHttpMessageConverter">
         <property type="dev.rennen.webmvc.util.convert.ObjectMapper" name="objectMapper" ref="objectMapper"/>
     </bean>
-    <bean id="objectMapper" class="dev.rennen.webmvc.util.convert.ObjectMapper" >
+
+    <bean id="objectMapper" class="dev.rennen.webmvc.util.convert.DefaultObjectMapper" >
         <property type="String" name="dateFormat" value="yyyy/MM/dd"/>
         <property type="String" name="decimalFormat" value="###.##"/>
     </bean>>
@@ -22,4 +24,5 @@
         <property type="String" name="prefix" value="/jsp/" />
         <property type="String" name="suffix" value=".jsp" />
     </bean>
+
 </beans>

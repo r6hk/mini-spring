@@ -1,5 +1,6 @@
 package dev.rennen.webmvc.web;
 
+import dev.rennen.beans.factory.support.ApplicationContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -9,4 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface HandlerMapping {
     HandlerMethod getHandler(HttpServletRequest request) throws Exception;
+
+    void initMappings(ApplicationContext applicationContext);
 }
