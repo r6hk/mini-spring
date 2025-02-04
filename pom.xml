@@ -6,7 +6,7 @@
 
     <groupId>dev.rennen</groupId>
     <artifactId>mini-spring-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -18,9 +18,9 @@
 
 
     <modules>
-        <module>./mini-spring-ioc</module>
-        <module>./mini-spring-mvc</module>
-        <module>./mini-spring-jdbc</module>
+        <module>mini-spring-ioc</module>
+        <module>mini-spring-mvc</module>
+        <module>mini-spring-jdbc</module>
     </modules>
 
     <dependencies>
@@ -71,6 +71,7 @@
     <!--    模块间相互依赖时，统一版本号-->
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>dev.rennen</groupId>
                 <artifactId>mini-spring-ioc</artifactId>
@@ -82,6 +83,13 @@
                 <artifactId>mini-spring-mvc</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>dev.rennen</groupId>
+                <artifactId>mini-spring-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

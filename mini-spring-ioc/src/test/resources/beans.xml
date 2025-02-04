@@ -30,4 +30,9 @@
     <bean id = "autowiredAnnotationBeanPostProcessor" class = "dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor"/>
 
     <bean id = "myListener" class = "dev.rennen.event.listener.MyListener"/>
+
+    <bean id="realaction" class="dev.rennen.beans.impl.AopServiceImpl" />
+    <bean id="action" class="dev.rennen.aop.ProxyFactoryBean" >
+        <property type="java.lang.Object" name="target" ref="realaction"/>
+    </bean>
 </beans>

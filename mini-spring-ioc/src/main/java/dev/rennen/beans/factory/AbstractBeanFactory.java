@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2025/1/2 10:38
  */
 @Slf4j
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory, BeanDefinitionRegistry {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements BeanFactory, BeanDefinitionRegistry {
 
     protected final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
     protected final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
@@ -66,7 +66,18 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
                 }
             }
         }
+        if (singleton instanceof FactoryBean<?> factoryBean) {
+            return this.getObjectForBeanInstance(factoryBean, beanName);
+        }
         return singleton;
+    }
+
+    protected Object getObjectForBeanInstance(Object beanInstance, String beanName) {
+        // Now we have the bean instance, which may be a normal bean or a FactoryBean.
+        if (!(beanInstance instanceof FactoryBean<?> factory)) {
+            return beanInstance;
+        }
+        return getObjectFromFactoryBean(factory, beanName);
     }
 
     private void invokeInitMethod(BeanDefinition beanDefinition, Object obj) {
