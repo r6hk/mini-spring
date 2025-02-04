@@ -1,11 +1,12 @@
 
 
 <beans>
-    <bean id="dataSource" class="dev.rennen.jdbc.core.datasource.SingleConnectionDataSource">
+    <bean id="dataSource" class="dev.rennen.jdbc.core.datasource.PooledDataSource">
         <property type="String" name="driverClassName" value="org.h2.Driver"/>
         <property type="String" name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;"/>
         <property type="String" name="username" value="sa"/>
         <property type="String" name="password" value=""/>
+        <property type="int" name="initialSize" value="3"/>
     </bean>
     <bean id="jdbcTemplate" class="dev.rennen.jdbc.core.JdbcTemplate" >
         <property type="javax.sql.DataSource" name="dataSource" ref="dataSource"/>
