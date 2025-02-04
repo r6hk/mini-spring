@@ -1,9 +1,8 @@
 package dev.rennen.jdbc.core.pool;
 
-import lombok.AllArgsConstructor;
+import dev.rennen.jdbc.core.datasource.PooledDataSource;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,25 +14,42 @@ import java.sql.Statement;
  *
  * @author rennen.dev
  */
-@Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Slf4j
 public class PooledConnection extends AbstractConnection {
-    private Connection connection;
-    private boolean active;
+    @Getter
+    private final Connection realConnection;
+    private final PooledDataSource dataSource;
 
-    @Override
-    public void close() {
-        this.active = false;
+    public PooledConnection(Connection realConnection, PooledDataSource dataSource) {
+        this.realConnection = realConnection;
+        this.dataSource = dataSource;
+    }
+
+    public boolean isValid() {
+        try {
+            return !realConnection.isClosed() && realConnection.isValid(2);
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     @Override
+    public void close() throws SQLException {
+        if (isValid()) {
+            dataSource.releaseConnection(this);
+        } else {
+            dataSource.closeQuietly(realConnection);
+        }
+    }
+
+    // 代理所有Connection方法到realConnection
+    @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return this.connection.prepareStatement(sql);
+        return realConnection.prepareStatement(sql);
     }
 
     @Override
     public Statement createStatement() throws SQLException {
-        return this.connection.createStatement();
+        return realConnection.createStatement();
     }
 }

@@ -1,12 +1,13 @@
 
 
 <beans>
+<!--    可替换为 dev.rennen.jdbc.core.datasource.SingleConnectionDataSource（移除 maxTotal）-->
     <bean id="dataSource" class="dev.rennen.jdbc.core.datasource.PooledDataSource">
-        <property type="String" name="driverClassName" value="org.h2.Driver"/>
-        <property type="String" name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;"/>
-        <property type="String" name="username" value="sa"/>
-        <property type="String" name="password" value=""/>
-        <property type="int" name="initialSize" value="3"/>
+        <constructor-arg type="String" name="driverClassName" value="org.h2.Driver"/>
+        <constructor-arg type="String" name="url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;"/>
+        <constructor-arg type="String" name="username" value="sa"/>
+        <constructor-arg type="String" name="password" value=""/>
+        <constructor-arg type="int" name="maxTotal" value="50"/>
     </bean>
     <bean id="jdbcTemplate" class="dev.rennen.jdbc.core.JdbcTemplate" >
         <property type="javax.sql.DataSource" name="dataSource" ref="dataSource"/>
