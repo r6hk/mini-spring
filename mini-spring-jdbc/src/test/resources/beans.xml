@@ -14,4 +14,7 @@
     </bean>
     <bean id="userService" class="dev.rennen.jdbc.test.service.UserService" />
     <bean id = "autowiredAnnotationBeanPostProcessor" class = "dev.rennen.beans.factory.process.impl.AutowiredAnnotationBeanPostProcessor"/>
+    <bean id="sqlSessionFactory" class="dev.rennen.jdbc.core.batis.DefaultSqlSessionFactory" init-method="init">
+        <constructor-arg type="String" name="mapperLocations" value="mapper"/>
+    </bean>
 </beans>

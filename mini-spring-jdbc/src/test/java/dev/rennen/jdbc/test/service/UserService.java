@@ -2,6 +2,7 @@ package dev.rennen.jdbc.test.service;
 
 import dev.rennen.beans.factory.annotation.Autowired;
 import dev.rennen.jdbc.core.JdbcTemplate;
+import dev.rennen.jdbc.core.batis.SqlSessionFactory;
 import dev.rennen.jdbc.test.entity.User;
 
 import java.sql.ResultSet;
@@ -18,10 +19,13 @@ public class UserService {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    SqlSessionFactory sqlSessionFactory;
+
     public User getUserInfoFunctional(int userid) {
         String sql = "select * from users where id=" + userid;
 
-        return jdbcTemplate.query((stmt)->{
+        return jdbcTemplate.query((stmt) -> {
             ResultSet rs = stmt.executeQuery(sql);
             User rtnUser = null;
             if (rs.next()) {
@@ -35,6 +39,7 @@ public class UserService {
 
     /**
      * 使用 PreparedStatement 查询用户信息，支持参数绑定，防止 SQL 注入
+     *
      * @param userId
      * @return
      */
@@ -81,4 +86,18 @@ public class UserService {
         });
     }
 
+    public User getUserUsingBatis(int userId) {
+        return (User) sqlSessionFactory.openSession().selectOne("com.test.entity.User.getUserInfo",
+                new Object[]{userId},
+                pstmt -> {
+                    ResultSet rs = pstmt.executeQuery();
+                    User user = null;
+                    if (rs.next()) {
+                        user = new User();
+                        user.setId(rs.getInt("id"));
+                        user.setName(rs.getString("name"));
+                    }
+                    return user;
+                });
+    }
 }

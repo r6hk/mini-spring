@@ -65,4 +65,13 @@ public class JdbcTest {
         assertEquals(4, user4.getId());
         assertEquals("Diana", user4.getName());
     }
+
+    @Test
+    public void test4() {
+        UserService userService = (UserService) context.getBean("userService");
+        User userInfo = userService.getUserUsingBatis(1);
+        assertNotNull(userInfo);
+        assertEquals(1, userInfo.getId());
+        assertEquals("Alice", userInfo.getName());
+    }
 }
