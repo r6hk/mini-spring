@@ -1,5 +1,6 @@
 package dev.rennen.aop;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
@@ -12,11 +13,11 @@ import java.lang.reflect.Proxy;
  * @author rennen.dev
  */
 @Slf4j
+@AllArgsConstructor
 public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
     Object target;
-    public JdkDynamicAopProxy(Object target) {
-        this.target = target;
-    }
+    Advisor advisor;
+
     @Override
     public Object getProxy() {
         ClassLoader classLoader = JdkDynamicAopProxy.class.getClassLoader();
@@ -26,10 +27,11 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getName().equals("doAction")) {
-            log.info("-----before call real object, dynamic proxy........");
-            if (args[0] instanceof Boolean booleanArg) {
-                args[0] = !booleanArg;
-            }
+            Class<?> targetClass = (target != null ? target.getClass() : null);
+            // 单独的增强逻辑
+            MethodInterceptor interceptor = this.advisor.getMethodInterceptor();
+            MethodInvocation invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass);
+            return interceptor.invoke(invocation);
         }
         return method.invoke(target, args);
     }

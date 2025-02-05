@@ -31,8 +31,10 @@
 
     <bean id = "myListener" class = "dev.rennen.event.listener.MyListener"/>
 
+    <bean id="myInterceptor" class="dev.rennen.aop.TracingInterceptor" />
     <bean id="realaction" class="dev.rennen.beans.impl.AopServiceImpl" />
     <bean id="action" class="dev.rennen.aop.ProxyFactoryBean" >
         <property type="java.lang.Object" name="target" ref="realaction"/>
+        <property type="String" name="interceptorName" value="myInterceptor"/>
     </bean>
 </beans>

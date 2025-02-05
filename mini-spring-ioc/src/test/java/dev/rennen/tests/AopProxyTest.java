@@ -21,10 +21,16 @@ class AopProxyTest {
     }
 
     @Test
-    void getProxy() {
+    void test1() {
         Object action = context.getBean("action");
         assertInstanceOf(AopService.class, action);
         boolean opposite = ((AopService) action).doAction(true);
-        assertFalse(opposite);
+        assertTrue(opposite);
+    }
+
+    @Test
+    void test2() {
+        Object action = context.getBean("action");
+        boolean opposite = ((AopService) action).doAction(true);
     }
 }

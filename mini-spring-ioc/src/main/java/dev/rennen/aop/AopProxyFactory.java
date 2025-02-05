@@ -6,5 +6,5 @@ package dev.rennen.aop;
  * @author rennen.dev
  */
 public interface AopProxyFactory {
-    AopProxy createAopProxy(Object target);
+    AopProxy createAopProxy(Object target, Advisor advisor);
 }

@@ -51,6 +51,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
                             return null;
                         }
                         singleton = createBean(beanDefinition);
+                        if (singleton instanceof BeanFactoryAware) {
+                            ((BeanFactoryAware) singleton).setBeanFactory(this);
+                        }
                         this.registerSingleton(beanName, singleton);
                         // 进行 BeanPostProcessor 处理
                         // step 1: postProcessBeforeInitialization
@@ -72,6 +75,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         return singleton;
     }
 
+    /**
+     * IoC 容器的入口，从 FactoryBean 中获取实例
+     * @param beanInstance FactoryBean 实例
+     * @param beanName beanName
+     * @return 实例
+     */
     protected Object getObjectForBeanInstance(Object beanInstance, String beanName) {
         // Now we have the bean instance, which may be a normal bean or a FactoryBean.
         if (!(beanInstance instanceof FactoryBean<?> factory)) {

@@ -1,8 +1,12 @@
 package dev.rennen.aop;
 
+import dev.rennen.beans.factory.BeanFactoryAware;
 import dev.rennen.beans.factory.FactoryBean;
+import dev.rennen.beans.factory.support.BeanFactory;
+import dev.rennen.exception.BeansException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 
 /**
@@ -10,7 +14,8 @@ import org.apache.commons.lang3.ClassUtils;
  *
  * @author rennen.dev
  */
-public class ProxyFactoryBean implements FactoryBean<Object> {
+@Slf4j
+public class ProxyFactoryBean implements FactoryBean<Object>, BeanFactoryAware {
     @Getter
     @Setter
     private AopProxyFactory aopProxyFactory;
@@ -21,13 +26,18 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
     private Object target;
     private ClassLoader proxyClassLoader = getDefaultClassLoader();
     private Object singletonInstance;
+    @Setter
+    private BeanFactory beanFactory;
+    @Setter
+    private String interceptorName;
+    private Advisor advisor;
 
     public ProxyFactoryBean() {
         this.aopProxyFactory = new DefaultAopProxyFactory();
     }
 
     protected AopProxy createAopProxy() {
-        return getAopProxyFactory().createAopProxy(target);
+        return getAopProxyFactory().createAopProxy(target, this.advisor);
     }
 
     public void setInterceptorNames(String... interceptorNames) {
@@ -38,8 +48,13 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
         this.targetName = targetName;
     }
 
+    /**
+     * 获取内部代理对象，重要入口
+     * @return 代理对象
+     */
     @Override
-    public Object getObject() throws Exception {//获取内部对象
+    public Object getObject() {
+        initializeAdvisor();
         return getSingletonInstance();
     }
 
@@ -79,5 +94,17 @@ public class ProxyFactoryBean implements FactoryBean<Object> {
             }
         }
         return cl;
+    }
+
+    private synchronized void initializeAdvisor() {
+        Object advice = null;
+        MethodInterceptor mi = null;
+        try {
+            advice = this.beanFactory.getBean(this.interceptorName);
+        } catch (BeansException e) {
+            log.error("Can't find interceptorName:{}", this.interceptorName);
+        }
+        this.advisor = new DefaultAdvisor();
+        this.advisor.setMethodInterceptor((MethodInterceptor)advice);
     }
 }
