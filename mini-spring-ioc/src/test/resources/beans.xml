@@ -31,10 +31,15 @@
 
     <bean id = "myListener" class = "dev.rennen.event.listener.MyListener"/>
 
-    <bean id="myInterceptor" class="dev.rennen.beans.advice.MyBeforeAdvice" />
+    <bean id="advisor" class="dev.rennen.aop.NameMatchMethodPointcutAdvisor">
+        <property type="dev.rennen.aop.Advice" name="advice" ref="advice"/>
+        <property type="String" name="mappedName" value="do*"/>
+    </bean>
+
+    <bean id="advice" class="dev.rennen.beans.advice.MyBeforeAdvice" />
     <bean id="realaction" class="dev.rennen.beans.impl.AopServiceImpl" />
     <bean id="action" class="dev.rennen.aop.ProxyFactoryBean" >
         <property type="java.lang.Object" name="target" ref="realaction"/>
-        <property type="String" name="interceptorName" value="myInterceptor"/>
+        <property type="String" name="interceptorName" value="advisor"/>
     </bean>
 </beans>

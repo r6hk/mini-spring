@@ -7,7 +7,7 @@ package dev.rennen.aop;
  */
 public class DefaultAopProxyFactory implements AopProxyFactory {
     @Override
-    public AopProxy createAopProxy(Object target, Advisor advisor) {
+    public AopProxy createAopProxy(Object target, PointcutAdvisor  advisor) {
         return new JdkDynamicAopProxy(target, advisor);
     }
 }

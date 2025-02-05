@@ -2,16 +2,19 @@ package dev.rennen.tests;
 
 import dev.rennen.beans.AopService;
 import dev.rennen.beans.factory.ClassPathXmlApplicationContext;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * <br/> 2025/2/4 22:42
  *
  * @author rennen.dev
  */
+@Slf4j
 class AopProxyTest {
     private ClassPathXmlApplicationContext context;
 
@@ -32,5 +35,6 @@ class AopProxyTest {
     void test2() {
         Object action = context.getBean("action");
         boolean opposite = ((AopService) action).doAction(true);
+        log.info("opposite: {}", opposite);
     }
 }

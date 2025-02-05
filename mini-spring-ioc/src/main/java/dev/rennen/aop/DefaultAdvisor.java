@@ -12,4 +12,9 @@ import lombok.Setter;
 @Getter
 public class DefaultAdvisor implements Advisor {
     private MethodInterceptor methodInterceptor;
+
+    @Override
+    public Advice getAdvice() {
+        return this.methodInterceptor;
+    }
 }
