@@ -37,9 +37,10 @@
     </bean>
 
     <bean id="advice" class="dev.rennen.beans.advice.MyBeforeAdvice" />
-    <bean id="realaction" class="dev.rennen.beans.impl.AopServiceImpl" />
-    <bean id="action" class="dev.rennen.aop.ProxyFactoryBean" >
-        <property type="java.lang.Object" name="target" ref="realaction"/>
-        <property type="String" name="interceptorName" value="advisor"/>
+    <bean id="actionAopService" class="dev.rennen.beans.impl.AopServiceImpl" />
+
+    <bean id="autoProxyCreator" class="dev.rennen.beans.factory.process.impl.BeanNameAutoProxyCreator" >
+        <property type="String" name="pattern" value="action*" />
+        <property type="String" name="interceptorName" value="advisor" />
     </bean>
 </beans>
