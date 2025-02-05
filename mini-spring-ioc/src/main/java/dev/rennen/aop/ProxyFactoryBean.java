@@ -19,12 +19,9 @@ public class ProxyFactoryBean implements FactoryBean<Object>, BeanFactoryAware {
     @Getter
     @Setter
     private AopProxyFactory aopProxyFactory;
-    private String[] interceptorNames;
-    private String targetName;
     @Setter
     @Getter
     private Object target;
-    private ClassLoader proxyClassLoader = getDefaultClassLoader();
     private Object singletonInstance;
     @Setter
     private BeanFactory beanFactory;
@@ -40,16 +37,9 @@ public class ProxyFactoryBean implements FactoryBean<Object>, BeanFactoryAware {
         return getAopProxyFactory().createAopProxy(target, this.advisor);
     }
 
-    public void setInterceptorNames(String... interceptorNames) {
-        this.interceptorNames = interceptorNames;
-    }
-
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
-    }
-
     /**
      * 获取内部代理对象，重要入口
+     *
      * @return 代理对象
      */
     @Override
@@ -102,9 +92,16 @@ public class ProxyFactoryBean implements FactoryBean<Object>, BeanFactoryAware {
         try {
             advice = this.beanFactory.getBean(this.interceptorName);
         } catch (BeansException e) {
-            log.error("Can't find interceptorName:{}", this.interceptorName);
+            log.error("Failed to get interceptor bean", e);
+        }
+        if (advice instanceof BeforeAdvice) {
+            mi = new MethodBeforeAdviceInterceptor((MethodBeforeAdvice) advice);
+        } else if (advice instanceof AfterAdvice) {
+            mi = new AfterReturningAdviceInterceptor((AfterReturningAdvice) advice);
+        } else if (advice instanceof MethodInterceptor) {
+            mi = (MethodInterceptor) advice;
         }
         this.advisor = new DefaultAdvisor();
-        this.advisor.setMethodInterceptor((MethodInterceptor)advice);
+        this.advisor.setMethodInterceptor(mi);
     }
 }
