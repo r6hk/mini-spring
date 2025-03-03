@@ -30,8 +30,8 @@
 ## 快速开始
 ### 1. 克隆项目
 ```bash
-git clone https://github.com/your-repo/minis.git
-cd minis
+git clone https://github.com/r6hk/mini-spring.git
+cd mini-spring
 ```
 
 ### 2. 配置 Bean
